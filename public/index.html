@@ -12,9 +12,18 @@
     <script src="game-start-2016.js"></script>
 
     <script>
+      
       const autoCompleteData = [];
+      const lines = {};
+      subwayData.lines.forEach(line => {
+        lines[line.id] = line
+      })
+      console.log(lines);
+
       subwayData.stations.forEach(station => {
-        autoCompleteData.push({ value: station, label: station.name });
+        let name = station.name;
+        name += ' - ' + station.lines.map((lid) => lines[lid].name).join(', ');
+        autoCompleteData.push({ value: station, label: name });
       });
 
       // Show label but insert value into the input:
@@ -32,7 +41,6 @@
           ws.send(JSON.stringify(event.text.value));
           return true;
         });
-      console.log(autoCompleteData);
 
       var HOST = location.origin.replace(/^http/, 'ws');
       var ws = new WebSocket(HOST);
