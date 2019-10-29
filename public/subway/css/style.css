@@ -491,9 +491,8 @@ div.game-start-greyed {
 
 #options {
     position: absolute;
-    padding: 12px;
+    padding: 0px;
     right: 0px;
-    top: 0px;
     bottom: 0px;
     background: rgba(0, 0, 0, 0.65);
     color: white;
@@ -501,7 +500,8 @@ div.game-start-greyed {
     max-height: 100%;
     overflow-y: hidden;
     overflow-x: visible;
-    width: 25%;
+    height: 15%;
+    width: 100%;
 }
 
 #option-section-lines {
@@ -604,4 +604,8 @@ div.game-start-greyed {
     cursor: grab;
     cursor: -moz-grab;
     cursor: -webkit-grab;
+}
+
+#updateInfoContainer {
+    margin: 12px;
 }

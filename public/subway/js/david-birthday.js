@@ -11,6 +11,8 @@ function listen_on_websocket() {
 
 function add_station(d) {
   console.log('adding station from websocket', d);
+  $('#updateInfo').html(`${d['name']} by ${d['adder']} - ${d['note']}`);
+
   var station = new Station(
     d['lat'],
     d['lng'],

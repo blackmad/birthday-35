@@ -204,7 +204,7 @@ function initialize_game_state() {
 var map = L.map('map', {
     fullscreenControl: true,
     attributionControl: false
-}).setView([40.713, -74.006], 13);
+}).setView([40.704133, -73.932304], 12);
 
 L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
         attribution: '',

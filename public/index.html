@@ -8,11 +8,15 @@
   </head>
   <body>
     <p id="server-time"></p>
-    <input id="station" type="text" />
+    Station: <input id="station" type="text" /><p>
+    Your Name: <input id="name" type="text" /><p></p>
+    Note: <input id="note" type="text" /><p></p>
+    <input type="submit" id="submit"/>
+
     <script src="game-start-2016.js"></script>
 
     <script>
-      
+      let selectedStation = null;
       const autoCompleteData = [];
       const lines = {};
       subwayData.lines.forEach(line => {
@@ -34,11 +38,17 @@
         }
       });
 
+      $('#submit').click(() => {
+        selectedStation['adder'] = $('#name')[0].value;
+        selectedStation['note'] = $('#note')[0].value;
+        ws.send(JSON.stringify(selectedStation));
+      });
+
       document
         .getElementById('station')
         .addEventListener('awesomplete-select', function(event) {
+          selectedStation = event.text.value;
           console.log(event.text.label, event.text.value);
-          ws.send(JSON.stringify(event.text.value));
           return true;
         });
 
