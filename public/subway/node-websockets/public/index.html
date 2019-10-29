@@ -1,0 +1,21 @@
+<html>
+  <body>
+    <p id='server-time'></p>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="game-start-2016.js"></script>
+
+    <script>
+      var HOST = location.origin.replace(/^http/, 'ws')
+      var ws = new WebSocket(HOST);
+      var el = document.getElementById('server-time');
+
+      ws.onopen = function (event) {
+        ws.send(JSON.stringify(subwayData.stations[0]))
+      };
+
+      ws.onmessage = function (event) {
+        el.innerHTML = 'Server time: ' + event.data;
+      };
+    </script>
+  </body>
+</html>

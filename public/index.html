@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.js"></script>
+    <style
+      href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.base.css"
+    ></style>
+  </head>
+  <body>
+    <p id="server-time"></p>
+    <input id="station" type="text" />
+    <script src="game-start-2016.js"></script>
+
+    <script>
+      const autoCompleteData = [];
+      subwayData.stations.forEach(station => {
+        autoCompleteData.push({ value: station, label: station.name });
+      });
+
+      // Show label but insert value into the input:
+      new Awesomplete($('#station')[0], {
+        list: autoCompleteData,
+        replace: function(suggestion) {
+          this.input.value = suggestion.label;
+        }
+      });
+
+      document
+        .getElementById('station')
+        .addEventListener('awesomplete-select', function(event) {
+          console.log(event.text.label, event.text.value);
+          ws.send(JSON.stringify(event.text.value));
+          return true;
+        });
+      console.log(autoCompleteData);
+
+      var HOST = location.origin.replace(/^http/, 'ws');
+      var ws = new WebSocket(HOST);
+      var el = document.getElementById('server-time');
+
+      ws.onopen = function(event) {
+        // subwayData.stations.forEach(d => ws.send(JSON.stringify(d)));
+        // ws.send(JSON.stringify(subwayData.stations[203]));
+        // ws.send(JSON.stringify(subwayData.stations[202]));
+      };
+
+      // ws.onmessage = function(event) {
+      //   el.innerHTML = 'Server time: ' + event.data;
+      // };
+    </script>
+  </body>
+</html>
