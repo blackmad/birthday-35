@@ -11,9 +11,9 @@ const assert = require('assert');
 
 // Connection URL
 const url = process.env.MONGODB_URI || 'mongodb://localhost:27017';
-
+console.log(url);
 // Database Name
-const dbName = 'birthday';
+const dbName = 'heroku_44g51tbh';
 
 // Create a new MongoClient
 const client = new MongoClient(url);
