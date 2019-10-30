@@ -5,36 +5,135 @@
     <style
       href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.base.css"
     ></style>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="subway/css/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"
+    />
+    <style>
+      .awesomplete li {
+        height: 40px;
+        list-style-type: none;
+      }
+
+      .subway-line {
+        top: 0.8em;
+      }
+
+      #form {
+        margin: auto;
+        width: 70%;
+        margin-top: 30px;
+        border-color: white;
+        border-width: 20px;
+        border-style: solid;
+        padding: 20px;
+      }
+
+      body {
+        background: black;
+        color: white;
+        font-family: helvetica neue,helvetica,sans-serif !important;
+        font-weight: 450;
+      }
+
+      .visually-hidden {
+        display: none !important;
+      }
+
+      input {
+    border: 5px solid white; 
+    -webkit-box-shadow: 
+      inset 0 0 8px  rgba(0,0,0,0.1),
+            0 0 16px rgba(0,0,0,0.1); 
+    -moz-box-shadow: 
+      inset 0 0 8px  rgba(0,0,0,0.1),
+            0 0 16px rgba(0,0,0,0.1); 
+    box-shadow: 
+      inset 0 0 8px  rgba(0,0,0,0.1),
+            0 0 16px rgba(0,0,0,0.1); 
+    padding: 15px;
+    background: black;
+    color: white;
+    margin: 0 0 10px 0;
+    font-family: helvetica neue,helvetica,sans-serif;
+}
+
+label {
+  margin-bottom: 0.3em;
+  margin-top: 1.3em;
+  display: block;
+
+}
+     
+    </style>
   </head>
   <body>
-    <p id="server-time"></p>
-    Station: <input id="station" type="text" /><p>
-    Your Name: <input id="name" type="text" /><p></p>
-    Note: <input id="note" type="text" /><p></p>
-    <input type="submit" id="submit"/>
+    <div id="form">
+      <label for="station"> Station</label><input id="station" type="text" required/>
+      <label for="name">Your Name</label> <input id="name" type="text" required/>
+      <label for="note">Note </label><input id="note" type="text" required/>
+      <p/>
+      <input type="submit" id="submit" />
+    </div>
 
     <script src="game-start-2016.js"></script>
 
     <script>
+      function makeLineHTML(lid) {
+        return `
+             <div id="182:0" class="tooltip subway-deletable ${lines[lid].css}"
+             style="background-color: ${lines[lid].color_bg}; color: ${lines[lid].color_text};">
+             <div class="height_fix"></div><div class="content">${lines[lid].name}</div></div>`;
+      }
+
+      function makeTextStationName(station) {
+          let name = station.name;
+          name += ' - ' + station.lines.map(lid => lines[lid].name).join(', ');
+          return name;
+      }
+
       let selectedStation = null;
       const autoCompleteData = [];
       const lines = {};
       subwayData.lines.forEach(line => {
-        lines[line.id] = line
-      })
+        lines[line.id] = line;
+      });
       console.log(lines);
 
+      //       0:
+      // color_bg: "#0039A6"
+      // color_text: "#FFFFFF"
+      // css: "subway-line subway-blue"
+      // draw_map: (59) [203, 202, 201, 200, 199, 198, 197, 196, 195, 194, 193, 192, 191, 190, 189, 225, 224, 223, 188, 222, 221, 187, 220, 186, 219, 218, 217, 185, 184, 183, 62, 425, 182, 216, 181, 179, 215, 178, 177, 214, 22, 213, 212, 211, 210, 209, 208, 207, 176, 206, 175, 205, 204, 9, 174, 173, 172, 171, 170]
+
       subwayData.stations.forEach(station => {
-        let name = station.name;
-        name += ' - ' + station.lines.map((lid) => lines[lid].name).join(', ');
-        autoCompleteData.push({ value: station, label: name });
+        // console.log(station);
+        if (station.lines.length > 0) {
+          let name = station.name;
+          name += ' - ' + station.lines.map(lid => makeLineHTML(lid)).join(' ');
+          name += autoCompleteData.push({ value: station, label: name });
+        }
       });
 
       // Show label but insert value into the input:
       new Awesomplete($('#station')[0], {
         list: autoCompleteData,
         replace: function(suggestion) {
-          this.input.value = suggestion.label;
+          this.input.value = makeTextStationName(suggestion.value);
         }
       });
 

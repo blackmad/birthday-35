@@ -34,16 +34,6 @@ function initWebSockets(db) {
 
   wss.on('connection', ws => {
     console.log('Client connected');
-    const collection = db.collection('messages');
-    // Find some documents
-    collection.find({}).toArray(function(err, docs) {
-      assert.equal(err, null);
-      console.log("Found the following records");
-      console.log(docs)
-      docs.forEach((doc) => {
-        ws.send(JSON.stringify(doc));
-      });
-    });
 
     ws.on('close', () => console.log('Client disconnected'));
     ws.on('message', function incoming(message) {
@@ -56,12 +46,28 @@ function initWebSockets(db) {
   });
 }
 
-function init(db) {
-  initWebSockets(db);
+function initAPIs(db) {
+  app.get('/history', function(req, res) {
+    const collection = db.collection('messages');
+    // Find some documents
+    collection.find({}).toArray(function(err, docs) {
+      assert.equal(err, null);
+      console.log('Found the following records');
+      console.log(docs);
+      res.send(JSON.stringify({'stations': docs}));
+    });
+  });
 }
 
-const server = express()
-  // .use((req, res) => res.sendFile(INDEX))
+function init(db) {
+  initWebSockets(db);
+  initAPIs(db);
+}
+
+const app = express();
+// .use((req, res) => res.sendFile(INDEX))
+
+const server = app
   .use(express.static('public'))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 

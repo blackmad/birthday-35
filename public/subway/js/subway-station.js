@@ -156,6 +156,7 @@ class Station {
 }
 
 function geocode_to_station(geo, line, borough, neighborhood) {
+    return;
 
 
 
@@ -170,6 +171,7 @@ function geocode_to_station(geo, line, borough, neighborhood) {
     calculate_ridership(N_station.id, RIDERSHIP_ADD);
 
     N_station.marker.openPopup();
+    debugger;
 
     var impacted_lines = [N_active_line.id];
     // Add drawmaps of nearby stations
@@ -184,18 +186,24 @@ function geocode_to_station(geo, line, borough, neighborhood) {
         }
     }
 
+    debugger;
     for (var i = 0; i < impacted_lines.length; i++) {
         N_lines[impacted_lines[i]].generate_draw_map();
         N_lines[impacted_lines[i]].generate_control_points();
     }
+    debugger;
     for (var i = 0; i < impacted_lines.length; i++) {
         N_lines[impacted_lines[i]].draw();
     }
+    debugger;
 
     station_layer.bringToFront();
+    debugger;
     generate_route_diagram(line);
+    debugger;
 
     calculate_total_ridership();
+    debugger;
 
 }
 

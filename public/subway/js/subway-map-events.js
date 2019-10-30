@@ -171,7 +171,7 @@ function remove_line_from_station_event(e) {
 }
 
 function build_to_station_event(e) {
-
+    debugger;
 
     var station_id = $(this).attr('id').replace('build-', '');
     var impacted_lines = N_stations[station_id].drawmaps();
@@ -186,6 +186,7 @@ function build_to_station_event(e) {
                 impacted_lines.push(parseInt(line));
         }
     }
+    debugger;
 
     for (var i = 0; i < station_lines.length; i++) {
         var line_id = station_lines[i];
@@ -208,22 +209,28 @@ function build_to_station_event(e) {
         }
 
     }
+    debugger;
 
     for (var i = 0; i < impacted_lines.length; i++) {
         N_lines[impacted_lines[i]].generate_draw_map();
         N_lines[impacted_lines[i]].generate_control_points();
     }
+    debugger;
     for (var i = 0; i < impacted_lines.length; i++) {
         N_lines[impacted_lines[i]].draw();
     }
+    debugger;
 
     station_layer.bringToFront();
+    debugger;
 
     calculate_ridership(station_id, RIDERSHIP_NOCHANGE);
     calculate_total_ridership();
+    debugger;
 
     regenerate_popups();
     generate_route_diagram(N_active_line);
+    debugger;
 }
 
 function transfer_station_event(e) {

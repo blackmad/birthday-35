@@ -2,16 +2,34 @@ function listen_on_websocket() {
   var HOST = location.origin.replace(/^http/, 'ws');
   var ws = new WebSocket(HOST);
 
+  $.getJSON('/history', data => {
+    data.stations.forEach(s => add_station(s));
+    re_init_lines();
+    // redraw();
+    station_layer.bringToFront();
+  });
+
   ws.onmessage = function(event) {
+  console.log('adding station from websocket', event);
     add_station(JSON.parse(event.data));
     re_init_lines();
-    redraw();
+    // redraw();
   };
 }
 
+const stationNotes = {};
+
 function add_station(d) {
-  console.log('adding station from websocket', d);
   $('#updateInfo').html(`${d['name']} by ${d['adder']} - ${d['note']}`);
+
+  if (!stationNotes[d.id]) {
+    stationNotes[d.id] = [];
+  }
+  stationNotes[d.id].push(d);
+  
+  if (N_stations[d.id]) {
+    return;
+  }
 
   var station = new Station(
     d['lat'],
@@ -35,15 +53,15 @@ function add_station(d) {
   //     fix_boroughs = true;
   //   }
   // }
-  //station.drawmaps = d["drawmaps"];
-  console.log(station.id)
+  // station.drawmaps = true;
+  // console.log(station);
   N_stations[station.id] = station;
 
   if (!d['active']) {
     N_stations[station.id].del();
   }
 
-  console.log(N_stations);
+  // console.log(N_stations);
 
   station.generate_popup();
 }
@@ -56,32 +74,33 @@ function re_init_lines() {
       var line_id = d['id'];
       // console.log(d)
 
-      if (line_id < N_lines.length) {
-        N_lines[line_id].stations = d['stations'];
-        N_lines[line_id].stations = _.filter(N_lines[line_id].stations, (id) => !!N_stations[id]);
-        N_lines[line_id].draw_map = d['draw_map'];
-        N_lines[line_id].draw_map = _.filter(N_lines[line_id].draw_map, (id) => !!N_stations[id]);
-      } else {
-        add_custom_line(d.html, d.css, d.color_bg, d.color_text);
-        add_custom_line_selector(
-          N_lines[j].html,
-          N_lines[j].css,
-          N_lines[j].color_bg,
-          N_lines[j].color_text
-        );
-        N_lines[j].stations = _.filter(d['stations'], (id) => !!N_stations[id]);
-        N_lines[j].draw_map = _.filter(d['draw_map'], (id) => !!N_stations[id]);
-      }
+      N_lines[line_id].stations = d['stations'];
+      if (d.name == 'A') { console.log(N_lines[line_id].stations); }
+      N_lines[line_id].stations = _.filter(
+        N_lines[line_id].stations,
+        id => !!N_stations[id]
+      );
+      if (d.name == 'A') { console.log(N_lines[line_id].stations); }
+
+      N_lines[line_id].draw_map = d['draw_map'];
+      N_lines[line_id].draw_map = _.filter(
+        N_lines[line_id].draw_map,
+        id => !!N_stations[id]
+      );
+      
       if (d.name == 'A') {
         // console.log(N_lines[line_id]);
       }
     }
+    redraw();
   });
 }
 
 function redraw() {
-  N_stations.forEach((station) => {
-    if (station) { station.drawmaps();}
+  N_stations.forEach(station => {
+    if (station) {
+      station.drawmaps();
+    }
   });
   for (var k = 0; k < N_lines.length; k++) {
     // console.log(N_lines[k]);
@@ -89,8 +108,12 @@ function redraw() {
     N_lines[k].generate_control_points();
   }
   for (var k = 0; k < N_lines.length; k++) {
-    // console.log(N_lines[k]);
-    N_lines[k].draw();
+    console.log(N_lines[k].stations);
+    if (N_lines[k].stations.length > 1) {
+      console.log('drawing', N_lines[k]);
+      N_lines[k].draw();
+      generate_route_diagram(N_lines[k]);
+    }
   }
-  generate_route_diagram(N_active_line);
+  // generate_route_diagram(N_active_line);
 }

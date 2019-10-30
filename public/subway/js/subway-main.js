@@ -228,11 +228,11 @@ var HEADLESS_MODE = false;
 $(function() {
 
     // Event handlers
-    map.on('click', handle_map_click);
-    $(document).on('click', '.station-delete', delete_station_event);
-    $(document).on('click', '.station-transfer', transfer_station_event);
-    $(document).on('click', '.station-build', build_to_station_event);
-    $(document).on('click', '.subway-deletable', remove_line_from_station_event);
+    // map.on('click', handle_map_click);
+    // $(document).on('click', '.station-delete', delete_station_event);
+    // $(document).on('click', '.station-transfer', transfer_station_event);
+    // $(document).on('click', '.station-build', build_to_station_event);
+    // $(document).on('click', '.subway-deletable', remove_line_from_station_event);
     $(document).on('click', '.station-name', function() {
         var text = $(this).text();
         var sn = $(this);
