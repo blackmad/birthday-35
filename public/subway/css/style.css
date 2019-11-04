@@ -500,7 +500,7 @@ div.game-start-greyed {
     max-height: 100%;
     overflow-y: hidden;
     overflow-x: visible;
-    height: 15%;
+    height: 33%;
     width: 100%;
 }
 
@@ -608,4 +608,21 @@ div.game-start-greyed {
 
 #updateInfoContainer {
     margin: 12px;
+}
+
+.note {
+    display: inline-block;
+    font-style: italic;
+}
+
+.infoString:first-child {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+
+.infoString:not(:first-child) {
+    font-weight: bold;
+    margin-left: 35px;
+    color: grey;
 }

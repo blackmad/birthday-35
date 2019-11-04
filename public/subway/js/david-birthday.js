@@ -27,9 +27,7 @@ function listen_on_websocket() {
 
 const stationNotes = {};
 
-function add_station(d) {
-  $('#updateInfo').html(`${d['name']} by ${d['adder']} - ${d['note']}`);
-
+function add_station(d) {  
   if (!stationNotes[d.id]) {
     stationNotes[d.id] = [];
   }
@@ -39,8 +37,13 @@ function add_station(d) {
     initialId = d._id;
   }
   
+  const infoString = `${d['name']} by ${d['adder']} <div class="note">${d['note']}</div>`;
+
   if (N_stations[d.id]) {
+    $('#updateInfo').prepend(`<div class="infoString">DUPE: ${infoString}</div>`);
     return;
+  } else {
+    $('#updateInfo').prepend(`<div class="infoString">${infoString}</div>`);
   }
 
   var station = new Station(
