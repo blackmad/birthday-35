@@ -1,20 +1,28 @@
-function listen_on_websocket() {
-  var HOST = location.origin.replace(/^http/, 'ws');
-  var ws = new WebSocket(HOST);
+let initialId = '';
 
-  $.getJSON('/history', data => {
+function refreshHistory() {
+  // console.log(`refreshing history after ${initialId}`);
+  $.getJSON(`/history?after=${initialId}`, data => {
     _.forEach(data.stations, s => add_station(s));
     re_init_lines();
-    // redraw();
-    station_layer.bringToFront();
   });
+}
 
-  ws.onmessage = function(event) {
-  console.log('adding station from websocket', event);
-    add_station(JSON.parse(event.data));
-    re_init_lines();
-    // redraw();
-  };
+function listen_on_websocket() {
+  const use_websockets = false;
+  if (use_websockets) {
+    refreshHistory();
+
+    var HOST = location.origin.replace(/^http/, 'ws');
+    var ws = new WebSocket(HOST);
+    ws.onmessage = function(event) {
+    // console.log('adding station from websocket', event);
+      add_station(JSON.parse(event.data));
+      re_init_lines();
+    };
+  } else {
+    window.setInterval(refreshHistory, 500);
+  }
 }
 
 const stationNotes = {};
@@ -26,6 +34,10 @@ function add_station(d) {
     stationNotes[d.id] = [];
   }
   stationNotes[d.id].push(d);
+
+  if (d._id > initialId) {
+    initialId = d._id;
+  }
   
   if (N_stations[d.id]) {
     return;
