@@ -6,8 +6,17 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 
-const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+
+var Db = require('mongodb').Db,
+    MongoClient = require('mongodb').MongoClient,
+    Server = require('mongodb').Server,
+    ReplSetServers = require('mongodb').ReplSetServers,
+    ObjectID = require('mongodb').ObjectID,
+    Binary = require('mongodb').Binary,
+    GridStore = require('mongodb').GridStore,
+    Grid = require('mongodb').Grid,
+    Code = require('mongodb').Code;
 
 // Connection URL
 const url = process.env.MONGODB_URI || 'mongodb://localhost:27017';
@@ -50,10 +59,18 @@ function initAPIs(db) {
   app.get('/history', function(req, res) {
     const collection = db.collection('messages');
     // Find some documents
-    collection.find({}).toArray(function(err, docs) {
+    let query = {}
+    console.log(req.query)
+    console.log(req)
+    if (req.query.after) {
+      var newObjectId = new ObjectID.createFromHexString(req.query.after);
+      query = {
+        _id: { $gt: newObjectId }
+      }
+      console.log(query)
+    }
+    collection.find(query).toArray(function(err, docs) {
       assert.equal(err, null);
-      console.log('Found the following records');
-      console.log(docs);
       res.send(JSON.stringify({'stations': docs}));
     });
   });

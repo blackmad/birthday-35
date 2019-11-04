@@ -3,7 +3,7 @@ function listen_on_websocket() {
   var ws = new WebSocket(HOST);
 
   $.getJSON('/history', data => {
-    data.stations.forEach(s => add_station(s));
+    _.forEach(data.stations, s => add_station(s));
     re_init_lines();
     // redraw();
     station_layer.bringToFront();
@@ -97,7 +97,7 @@ function re_init_lines() {
 }
 
 function redraw() {
-  N_stations.forEach(station => {
+  _.forEach(N_stations, station => {
     if (station) {
       station.drawmaps();
     }
@@ -108,9 +108,7 @@ function redraw() {
     N_lines[k].generate_control_points();
   }
   for (var k = 0; k < N_lines.length; k++) {
-    console.log(N_lines[k].stations);
     if (N_lines[k].stations.length > 1) {
-      console.log('drawing', N_lines[k]);
       N_lines[k].draw();
       generate_route_diagram(N_lines[k]);
     }
