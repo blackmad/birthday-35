@@ -618,6 +618,7 @@ div.game-start-greyed {
 .infoString:first-child {
     font-weight: bold;
     margin-bottom: 5px;
+    font-size: 200%;
 }
 
 
@@ -625,4 +626,5 @@ div.game-start-greyed {
     font-weight: bold;
     margin-left: 35px;
     color: grey;
+    font-size: 150%;
 }
