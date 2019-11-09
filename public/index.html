@@ -171,6 +171,7 @@
       });
 
       $('#submit').click(() => {
+        $('#submit').disable();
         selectedStation['adder'] = $('#name')[0].value;
         selectedStation['note'] = $('#note')[0].value;
         ws.send(JSON.stringify(selectedStation));
